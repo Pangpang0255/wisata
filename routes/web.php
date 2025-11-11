@@ -13,7 +13,8 @@
 |
 */
 
-$router->get('/', 'WebController@index');
+$router->get('/', 'WebController@login');
+$router->get('/login', 'WebController@login');
 $router->get('/dashboard', 'WebController@dashboard');
 
 

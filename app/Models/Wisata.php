@@ -4,17 +4,23 @@ use Illuminate\Database\Eloquent\Model;
 class Wisata extends Model
 {
     protected $table = 'wisata';
-    protected $primaryKey = 'id_wisata';
-    public $timestamps = false;
+    protected $primaryKey = 'id';
+    public $timestamps = true;
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'kota',
-        'landmark',
-        'tarif'
+        'nama_wisata',
+        'deskripsi',
+        'lokasi',
+        'kategori',
+        'harga_tiket',
+        'jam_buka',
+        'jam_tutup',
+        'foto',
+        'rating'
     ];
 
     /**
