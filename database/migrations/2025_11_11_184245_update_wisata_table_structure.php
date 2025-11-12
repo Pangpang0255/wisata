@@ -26,6 +26,7 @@ return new class extends Migration
             $table->decimal('harga_tiket', 10, 2)->default(0);
             $table->time('jam_buka');
             $table->time('jam_tutup');
+            $table->string('foto')->nullable();
             $table->decimal('rating', 3, 2)->default(0);
             $table->timestamps();
         });

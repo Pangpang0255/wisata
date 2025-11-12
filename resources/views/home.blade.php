@@ -24,6 +24,23 @@
         margin: 0;
     }
 
+    .admin-link {
+        padding: 8px 16px;
+        background: linear-gradient(135deg, #FF7F50 0%, #FF6347 100%);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .admin-link:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(255, 127, 80, 0.3);
+    }
+
     .login-btn {
         padding: 8px 16px;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -353,12 +370,12 @@
 @section('content')
 <div class="header">
     <h1>🏝️ Wisata Indonesia</h1>
-    <a href="/login" class="login-btn">Login Admin</a>
+    <a href="/login" class="admin-link">🔐 Login Admin</a>
 </div>
 
 <div class="hero">
     <h1>🏝️ Wisata Indonesia</h1>
-    <p>Jelajahi keindahan destinasi wisata terbaik di Indonesia</p>
+    <p>Jelajahi keindahan destinasi wisata terbaik di Indonesia untuk pengunjung</p>
 </div>
 
 <div class="search-section">

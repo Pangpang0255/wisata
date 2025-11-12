@@ -13,8 +13,9 @@
 |
 */
 
-$router->get('/', 'WebController@login');
+$router->get('/', 'WebController@login'); // Langsung ke login admin
 $router->get('/login', 'WebController@login');
+$router->get('/admin', 'WebController@login'); // Alias untuk login admin
 $router->get('/dashboard', 'WebController@dashboard');
 
 

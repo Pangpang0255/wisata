@@ -8,6 +8,13 @@
         padding: 20px 0;
     }
 
+    .header h1 {
+        color: #228B22;
+        font-size: 28px;
+        margin: 0;
+        font-weight: 700;
+    }
+
     .stats {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -27,7 +34,7 @@
 
     .stat-icon {
         font-size: 40px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient( #00BFFF );
         width: 70px;
         height: 70px;
         display: flex;
@@ -73,7 +80,7 @@
 
     .search-box input:focus {
         outline: none;
-        border-color: #667eea;
+        border-color: #FF7F50;
     }
 
     table {
@@ -86,7 +93,7 @@
     }
 
     thead {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient( #228B22);
         color: white;
     }
 
@@ -204,7 +211,7 @@
     .form-group select:focus,
     .form-group textarea:focus {
         outline: none;
-        border-color: #667eea;
+        border-color: #FF7F50;
     }
 
     .modal-footer {
@@ -488,9 +495,7 @@
         }
     }
 </style>
-    }
-}
-</style>
+
 <style>
 .btn {
     padding: 10px 20px;
@@ -589,7 +594,7 @@
     }
 
     .select2-container--default .select2-results__option--highlighted[aria-selected] {
-        background-color: #667eea;
+        background-color: #FF7F50;
         color: white;
     }
 </style>
@@ -598,7 +603,7 @@
 @section('content')
 <div class="container dashboard">
     <div class="header">
-        <h1>🏝️ Dashboard Wisata Indonesia</h1>
+        <h1>🏝️ Dashboard Admin - Wisata Indonesia</h1>
         <div>
             <span id="userEmail" style="margin-right: 15px; color: #718096;"></span>
             <button class="btn btn-danger" onclick="logout()">Logout</button>

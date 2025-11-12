@@ -17,7 +17,7 @@
         min-height: 100vh;
         width: 100%;
         padding: 20px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #55C2C3 0%, #c9d1d5 100%);
     }
 
     .login-card {
@@ -47,7 +47,7 @@
     }
 
     .login-header h2 {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(#55c2c3);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -84,14 +84,14 @@
 
     .form-group input:focus {
         outline: none;
-        border-color: #667eea;
+        border-color: #228B22;
         box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
 
     .login-btn {
         width: 100%;
         padding: 14px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(#55c2c3);
         color: white;
         border: none;
         border-radius: 10px;
@@ -213,7 +213,7 @@
         <div class="icon">🏝️</div>
         <div class="login-header">
             <h2>Wisata Indonesia</h2>
-            <p>Silakan login untuk melanjutkan</p>
+            <p>Login Admin - Kelola Data Wisata</p>
         </div>
 
         <div id="error-message"></div>
