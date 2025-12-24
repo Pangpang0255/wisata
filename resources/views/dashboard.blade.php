@@ -765,11 +765,14 @@
     // Fetch wisata data
     async function fetchWisata() {
         try {
+            console.log('Fetching wisata from:', API_URL + '/wisata');
             const response = await fetch(API_URL + '/wisata', {
                 headers: {
                     'Authorization': 'Bearer ' + token
                 }
             });
+
+            console.log('Response status:', response.status);
 
             if (response.status === 401) {
                 alert('Sesi Anda telah berakhir. Silakan login kembali.');
@@ -777,8 +780,25 @@
                 return;
             }
 
-            wisataData = await response.json();
+            const result = await response.json();
+            console.log('Response data:', result);
+            console.log('Has data property:', result.hasOwnProperty('data'));
+            console.log('Is array:', Array.isArray(result));
+            
+            // Handle paginated response
+            if (result.data && Array.isArray(result.data)) {
+                wisataData = result.data;
+                console.log('Using paginated data, count:', wisataData.length);
+            } else if (Array.isArray(result)) {
+                wisataData = result;
+                console.log('Using array data, count:', wisataData.length);
+            } else {
+                wisataData = [];
+                console.log('No data found!');
+            }
+            
             filteredData = [...wisataData];
+            console.log('Calling renderTable with', filteredData.length, 'items');
             renderTable();
             updateStats();
         } catch (error) {
@@ -1000,9 +1020,17 @@
 
     // Logout
     function logout() {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = '/login';
+        // Panggil API logout untuk invalidate token
+        fetch(API_URL + '/logout', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+        }).finally(() => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        });
     }
 
     // Close modal when clicking outside

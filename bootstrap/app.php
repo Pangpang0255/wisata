@@ -60,8 +60,11 @@ $app->singleton(
 */
 
 $app->configure('app');
-$app->configure('auth');
+$app->configure('database');
 $app->configure('view');
+$app->configure('jwt');
+$app->configure('auth');
+$app->configure('cache');
 /*
 |--------------------------------------------------------------------------
 | Register Middleware
@@ -79,6 +82,7 @@ $app->configure('view');
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
+    'throttle' => App\Http\Middleware\ThrottleRequests::class,
 ]);
 
 /*
@@ -96,6 +100,7 @@ $app->routeMiddleware([
 // $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+$app->register(Illuminate\Cache\CacheServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
@@ -112,5 +117,8 @@ $app->router->group([
 ], function ($router) {
     require __DIR__ . '/../routes/web.php';
 });
+
+// Boot all service providers explicitly
+$app->boot();
 
 return $app;

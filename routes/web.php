@@ -13,23 +13,30 @@
 |
 */
 
-$router->get('/', 'WebController@login'); // Langsung ke login admin
+$router->get('/', 'WebController@userDashboard'); // Dashboard user/public
+$router->get('/wisata', 'WebController@userDashboard'); // Alias untuk user dashboard
 $router->get('/login', 'WebController@login');
 $router->get('/admin', 'WebController@login'); // Alias untuk login admin
 $router->get('/dashboard', 'WebController@dashboard');
+$router->get('/test', function () {
+    return response()->json(['message' => 'Test route works']);
+});
 
 
-$router->group(['prefix' => 'api'], function () use ($router) {
+$router->group(['prefix' => 'api', 'middleware' => 'throttle:200,1'], function () use ($router) {
+    // Public endpoints (200 req/min - cukup untuk development & production)
     $router->get('wisata', ['uses' => 'WisataController@showAll']);
     $router->get('wisata/{id}', ['uses' => 'WisataController@showOne']);
-    $router->post('wisata', ['uses' => 'WisataController@create']);
-    $router->delete('wisata/{id}', ['uses' => 'WisataController@delete']);
-    $router->put('wisata/{id}', ['uses' => 'WisataController@update']);
-
-    // jwt-auth
-    $router->post('login', ['uses' => 'AuthController@login']);
+    
+    // Auth endpoints (20 req/min untuk keamanan login)
+    $router->post('login', ['middleware' => 'throttle:20,1', 'uses' => 'AuthController@login']);
     $router->post('logout', ['uses' => 'AuthController@logout']);
     $router->post('refresh', ['uses' => 'AuthController@refresh']);
     $router->post('user-profile', ['uses' => 'AuthController@me']);
+    
+    // Protected endpoints (200 req/min)
+    $router->post('wisata', ['uses' => 'WisataController@create']);
+    $router->delete('wisata/{id}', ['uses' => 'WisataController@delete']);
+    $router->put('wisata/{id}', ['uses' => 'WisataController@update']);
 });
 

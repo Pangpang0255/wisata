@@ -213,7 +213,7 @@
         <div class="icon">🏝️</div>
         <div class="login-header">
             <h2>Wisata Indonesia</h2>
-            <p>Login Admin - Kelola Data Wisata</p>
+            <p>Login untuk Akses Sistem</p>
         </div>
 
         <div id="error-message"></div>
@@ -221,7 +221,7 @@
         <form id="loginForm">
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="admin@wisata.com" required>
+                <input type="email" id="email" name="email" placeholder="Masukkan email Anda" required>
             </div>
 
             <div class="form-group">
@@ -233,6 +233,12 @@
                 Masuk
             </button>
         </form>
+
+        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; font-size: 13px; color: #666;">
+            <strong>Demo Account:</strong><br>
+            👤 User: user@gmail.com / user123<br>
+            🔐 Admin: admin@gmail.com / admin
+        </div>
     </div>
 </div>
 @endsection
@@ -273,10 +279,15 @@
                 localStorage.setItem('token', data.access_token);
                 localStorage.setItem('user', JSON.stringify(data.user || { email: email }));
                 
-                // Redirect to dashboard
-                window.location.href = '/dashboard';
+                // Redirect berdasarkan role
+                const userRole = data.user?.role || 'user';
+                if (userRole === 'admin') {
+                    window.location.href = '/dashboard'; // Admin dashboard
+                } else {
+                    window.location.href = '/wisata'; // User dashboard
+                }
             } else {
-                throw new Error(data.error || 'Login gagal. Silakan coba lagi.');
+                throw new Error(data.message || 'Login gagal. Periksa email dan password Anda.');
             }
         } catch (error) {
             errorMessage.innerHTML = `
@@ -291,8 +302,16 @@
     });
 
     // Check if already logged in
-    if (localStorage.getItem('token')) {
-        window.location.href = '/dashboard';
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    if (token && user.role) {
+        // Redirect sesuai role
+        if (user.role === 'admin') {
+            window.location.href = '/dashboard';
+        } else {
+            window.location.href = '/wisata';
+        }
     }
 </script>
 @endsection

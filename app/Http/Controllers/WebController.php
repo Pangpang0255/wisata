@@ -14,4 +14,9 @@ class WebController extends Controller
     {
         return view('dashboard');
     }
+
+    public function userDashboard()
+    {
+        return view('user-dashboard');
+    }
 }
