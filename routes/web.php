@@ -13,8 +13,8 @@
 |
 */
 
-$router->get('/', 'WebController@userDashboard'); // Dashboard user/public
-$router->get('/wisata', 'WebController@userDashboard'); // Alias untuk user dashboard
+$router->get('/', 'WebController@login'); // Redirect ke login
+$router->get('/wisata', 'WebController@userDashboard'); // Dashboard user/public
 $router->get('/login', 'WebController@login');
 $router->get('/admin', 'WebController@login'); // Alias untuk login admin
 $router->get('/dashboard', 'WebController@dashboard');
