@@ -6,8 +6,9 @@ try {
     (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
         dirname(__DIR__)
     ))->bootstrap();
-} catch (Dotenv\Exception\InvalidPathException $e) {
-    // .env file not found, use environment variables from Railway
+} catch (Exception $e) {
+    // .env file not found, Railway uses environment variables directly
+    // This is expected in production deployments
 }
 
 date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
