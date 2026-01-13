@@ -1,14 +1,16 @@
 [phases.setup]
-nixPkgs = ["php82", "php82Packages.composer"]
+nixPkgs = ["php82", "php82Extensions.pdo", "php82Extensions.pdo_mysql", "php82Extensions.mbstring", "php82Extensions.openssl"]
 
 [phases.install]
-cmds = ["composer install --no-dev --optimize-autoloader --no-interaction"]
+cmds = [
+  "composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist"
+]
 
 [phases.build]
 cmds = [
   "mkdir -p storage/framework/cache storage/framework/views storage/framework/sessions storage/logs bootstrap/cache",
-  "chmod -R 777 storage bootstrap/cache"
+  "chmod -R 775 storage bootstrap/cache"
 ]
 
 [start]
-cmd = "php -S 0.0.0.0:$PORT -t public"
+cmd = "sh start.sh"
