@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Testing - Wisata API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .controls {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(56, 239, 125, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .results {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .results h2 {
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .test-output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .test-output:empty::before {
+            content: 'No test results yet. Click "Run All Tests" to start.';
+            color: #888;
+            font-style: italic;
+        }
+
+        .test-suite {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .test-suite h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .test-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .test-item.passed {
+            border-left: 3px solid #38ef7d;
+        }
+
+        .test-item.failed {
+            border-left: 3px solid #f5576c;
+        }
+
+        .icon {
+            font-size: 20px;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .summary-card.success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .summary-card.failed {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .summary-card h3 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .summary-card p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .badge.success {
+            background: #38ef7d;
+            color: white;
+        }
+
+        .badge.failed {
+            background: #f5576c;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Unit Testing Dashboard</h1>
+            <p>Wisata API Testing Interface</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="runAllTests()">
+                ▶️ Run All Tests
+            </button>
+            <button class="btn btn-success" onclick="runAuthTests()">
+                🔐 Run Auth Tests
+            </button>
+            <button class="btn btn-success" onclick="runWisataTests()">
+                🏖️ Run Wisata Tests
+            </button>
+            <button class="btn btn-warning" onclick="clearResults()">
+                🗑️ Clear Results
+            </button>
+        </div>
+
+        <div class="results">
+            <h2>📊 Test Results</h2>
+            
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Running tests, please wait...</p>
+            </div>
+
+            <div class="summary" id="summary" style="display: none;">
+                <div class="summary-card">
+                    <h3 id="totalTests">0</h3>
+                    <p>Total Tests</p>
+                </div>
+                <div class="summary-card success">
+                    <h3 id="passedTests">0</h3>
+                    <p>Passed</p>
+                </div>
+                <div class="summary-card failed">
+                    <h3 id="failedTests">0</h3>
+                    <p>Failed</p>
+                </div>
+            </div>
+
+            <div class="test-output" id="output"></div>
+        </div>
+    </div>
+
+    <script>
+        async function runTests(filter = '') {
+            const output = document.getElementById('output');
+            const loading = document.querySelector('.loading');
+            const summary = document.getElementById('summary');
+            
+            // Show loading
+            loading.classList.add('active');
+            output.innerHTML = '';
+            summary.style.display = 'none';
+
+            try {
+                const response = await fetch('test-runner.php?filter=' + filter);
+                const data = await response.json();
+                
+                // Hide loading
+                loading.classList.remove('active');
+                
+                // Show summary
+                summary.style.display = 'grid';
+                document.getElementById('totalTests').textContent = data.total || 0;
+                document.getElementById('passedTests').textContent = data.passed || 0;
+                document.getElementById('failedTests').textContent = data.failed || 0;
+                
+                // Display results
+                output.innerHTML = formatTestOutput(data);
+                
+            } catch (error) {
+                loading.classList.remove('active');
+                output.innerHTML = `<span style="color: #f5576c;">❌ Error running tests: ${error.message}</span>`;
+            }
+        }
+
+        function formatTestOutput(data) {
+            if (!data.output) {
+                return '<span style="color: #888;">No test output available</span>';
+            }
+            
+            let html = '';
+            
+            if (data.success) {
+                html += '<span style="color: #38ef7d; font-weight: bold;">✅ ALL TESTS PASSED!</span>\n\n';
+            } else {
+                html += '<span style="color: #f5576c; font-weight: bold;">❌ SOME TESTS FAILED</span>\n\n';
+            }
+            
+            html += data.output;
+            
+            return html;
+        }
+
+        function runAllTests() {
+            runTests('');
+        }
+
+        function runAuthTests() {
+            runTests('AuthTest');
+        }
+
+        function runWisataTests() {
+            runTests('WisataTest');
+        }
+
+        function clearResults() {
+            document.getElementById('output').innerHTML = '';
+            document.getElementById('summary').style.display = 'none';
+            document.getElementById('totalTests').textContent = '0';
+            document.getElementById('passedTests').textContent = '0';
+            document.getElementById('failedTests').textContent = '0';
+        }
+    </script>
+</body>
+</html>

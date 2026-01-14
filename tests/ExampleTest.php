@@ -3,21 +3,44 @@
 namespace Tests;
 
 use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class ExampleTest extends TestCase
 {
+    use DatabaseMigrations;
+
     /**
-     * A basic test example.
+     * Test that API is working
      *
      * @return void
      */
-    public function test_that_base_endpoint_returns_a_successful_response()
+    public function test_api_is_accessible()
     {
-        $this->get('/');
+        // Run migrations first
+        $this->artisan('migrate');
+        
+        // Create test data
+        \App\Models\Wisata::create([
+            'nama_wisata' => 'Test',
+            'deskripsi' => 'Test',
+            'lokasi' => 'Test',
+            'harga_tiket' => 1000,
+            'rating' => 4.0
+        ]);
+        
+        $response = $this->get('/api/wisata');
 
-        $this->assertEquals(
-            $this->app->version(), $this->response->getContent()
-        );
+        $this->assertEquals(200, $this->response->status());
+    }
+
+    /**
+     * Test that API returns JSON
+     *
+     * @return void
+     */
+    public function test_api_returns_json()
+    {
+        $response = $this->get('/api/wisata');
+
+        $this->seeHeader('Content-Type', 'application/json');
     }
 }

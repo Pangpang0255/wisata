@@ -1,0 +1,361 @@
+{
+	"info": {
+		"name": "Wisata API - Complete Collection",
+		"description": "Complete API collection untuk Wisata Application dengan Authentication",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Auto-save token to environment variable",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"token\", jsonData.access_token);",
+									"    console.log(\"Token saved:\", jsonData.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@admin.com\",\n    \"password\": \"admin\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "login"]
+						},
+						"description": "Login dengan email dan password untuk mendapatkan JWT token"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Profile",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/user-profile",
+							"host": ["{{base_url}}"],
+							"path": ["api", "user-profile"]
+						},
+						"description": "Mendapatkan informasi user yang sedang login"
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Auto-update token",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"token\", jsonData.access_token);",
+									"    console.log(\"Token refreshed and saved\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/refresh",
+							"host": ["{{base_url}}"],
+							"path": ["api", "refresh"]
+						},
+						"description": "Refresh JWT token yang akan expired"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/logout",
+							"host": ["{{base_url}}"],
+							"path": ["api", "logout"]
+						},
+						"description": "Logout dan invalidate token"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Wisata - Public",
+			"item": [
+				{
+					"name": "Get All Wisata",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/wisata",
+							"host": ["{{base_url}}"],
+							"path": ["api", "wisata"]
+						},
+						"description": "Mendapatkan semua data wisata (Public - tanpa auth)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Wisata - With Filters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/wisata?nama_wisata=Pantai&lokasi=Bali&harga_min=10000&harga_max=50000&rating_min=4&sort_by=rating&sort_order=desc&per_page=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "wisata"],
+							"query": [
+								{
+									"key": "nama_wisata",
+									"value": "Pantai"
+								},
+								{
+									"key": "lokasi",
+									"value": "Bali"
+								},
+								{
+									"key": "harga_min",
+									"value": "10000"
+								},
+								{
+									"key": "harga_max",
+									"value": "50000"
+								},
+								{
+									"key": "rating_min",
+									"value": "4"
+								},
+								{
+									"key": "sort_by",
+									"value": "rating"
+								},
+								{
+									"key": "sort_order",
+									"value": "desc"
+								},
+								{
+									"key": "per_page",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Get wisata dengan filtering dan sorting"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Wisata",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/wisata/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "wisata", "1"]
+						},
+						"description": "Mendapatkan detail wisata berdasarkan ID (Public)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Wisata - Admin Only",
+			"item": [
+				{
+					"name": "Create Wisata",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nama_wisata\": \"Pantai Kuta\",\n    \"deskripsi\": \"Pantai dengan pasir putih dan sunset yang indah\",\n    \"lokasi\": \"Bali\",\n    \"harga_tiket\": 25000,\n    \"rating\": 4.5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/wisata",
+							"host": ["{{base_url}}"],
+							"path": ["api", "wisata"]
+						},
+						"description": "Membuat data wisata baru (Requires: Admin Token)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Wisata",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nama_wisata\": \"Pantai Kuta - Updated\",\n    \"deskripsi\": \"Pantai dengan pasir putih, sunset indah, dan surfing spot\",\n    \"lokasi\": \"Bali\",\n    \"harga_tiket\": 30000,\n    \"rating\": 4.8\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/wisata/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "wisata", "1"]
+						},
+						"description": "Update data wisata (Requires: Admin Token)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Wisata",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/wisata/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "wisata", "1"]
+						},
+						"description": "Menghapus data wisata (Requires: Admin Token)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Test PHP",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/test.php",
+							"host": ["{{base_url}}"],
+							"path": ["test.php"]
+						},
+						"description": "Test apakah PHP berjalan"
+					},
+					"response": []
+				},
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health.php",
+							"host": ["{{base_url}}"],
+							"path": ["health.php"]
+						},
+						"description": "Health check aplikasi"
+					},
+					"response": []
+				},
+				{
+					"name": "Check Environment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/check.php",
+							"host": ["{{base_url}}"],
+							"path": ["check.php"]
+						},
+						"description": "Check environment variables"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
