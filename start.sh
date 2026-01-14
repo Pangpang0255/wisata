@@ -45,6 +45,18 @@ EOF
     echo ".env file created"
 fi
 
+# Clear cache
+echo "Clearing cache..."
+php artisan cache:clear || true
+php artisan config:clear || true
+php artisan view:clear || true
+
+# Run migrations if RUN_MIGRATIONS is set
+if [ "$RUN_MIGRATIONS" = "true" ]; then
+    echo "Running migrations..."
+    php artisan migrate --force || echo "Migration failed or already ran"
+fi
+
 # Test PHP
 echo "Testing PHP..."
 php -v
