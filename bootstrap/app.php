@@ -7,8 +7,7 @@ try {
         dirname(__DIR__)
     ))->bootstrap();
 } catch (Exception $e) {
-    // .env file not found, Railway uses environment variables directly
-    // This is expected in production deployments
+    // .env file not found
 }
 
 date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
